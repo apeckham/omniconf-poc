@@ -11,8 +11,7 @@
               :default 8080}})
 
 (defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
+  [command & args]
   (cfg/populate-from-cmd args)
   (cfg/populate-from-env)
   (cfg/verify)
