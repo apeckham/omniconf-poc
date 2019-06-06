@@ -6,5 +6,5 @@
 
 (defn disconnect []
   (cfg/with-options [confirm]
-    (println "Disconnecting! (confirm is %s)" (str confirm))))
+    (println (format "Disconnecting! (confirm is %s)" (str confirm)))))
 

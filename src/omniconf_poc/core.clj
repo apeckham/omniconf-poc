@@ -7,7 +7,7 @@
 (defn -main
   [command & args]
   (define-cfg (keyword command))
-  (cfg/populate-from-cmd args)
+  (cfg/populate-from-cmd (or args ["--help"]))
   (cfg/populate-from-env)
   (cfg/verify)
   ((ns-resolve 'omniconf-poc.commands (symbol command))))
