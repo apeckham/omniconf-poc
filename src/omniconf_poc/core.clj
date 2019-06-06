@@ -1,13 +1,26 @@
 (ns omniconf-poc.core
   (:gen-class)
   (:require [omniconf.core :as cfg]
-            [omniconf-poc.config :refer [define-cfg]]
             omniconf-poc.commands))
 
+(cfg/define
+  {:hostname {:description "where service is deployed"
+              :type :string
+              :required #(#{:connect} (cfg/get :command))}
+   :port     {:description "HTTP port"
+              :type :number
+              :default 8080}
+   :command {:type :keyword
+             :required :true}
+   :confirm {:type :boolean
+             :required #(#{:disconnect} (cfg/get :command))}})
+
 (defn -main
-  [command & args]
-  (define-cfg (keyword command))
-  (cfg/populate-from-cmd (or args ["--help"]))
+  [& args]
+  (cfg/populate-from-cmd args)
   (cfg/populate-from-env)
   (cfg/verify)
-  ((ns-resolve 'omniconf-poc.commands (symbol command))))
+  ((->> (cfg/get :command)
+        name
+        symbol
+        (ns-resolve 'omniconf-poc.commands))))
