@@ -5,5 +5,6 @@
   (println (format "Connecting to %s!" (cfg/get :hostname))))
 
 (defn disconnect []
-  (println "Disconnecting!"))
+  (cfg/with-options [confirm]
+    (println "Disconnecting! (confirm is %s)" (str confirm))))
 
