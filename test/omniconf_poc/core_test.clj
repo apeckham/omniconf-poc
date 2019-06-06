@@ -5,7 +5,11 @@
             [omniconf-poc.config :refer [define-cfg]]
             [omniconf-poc.commands :refer [connect]]))
 
+(defn setup-cfg [command values]
+  (define-cfg command)
+  (cfg/populate-from-map values)
+  (cfg/verify :silent true))
+
 (deftest connect-test
-  (define-cfg :connect)
-  (cfg/populate-from-map {:hostname "asdf"})
+  (setup-cfg :connect {:hostname "asdf"})
   (is (= "Connecting to asdf!\n" (with-out-str (connect)))))
