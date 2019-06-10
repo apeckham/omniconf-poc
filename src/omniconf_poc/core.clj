@@ -11,7 +11,7 @@
               :type :number
               :default 8080}
    :command {:type :keyword
-             :required :true}
+             :one-of [:connect :disconnect]}
    :confirm {:type :boolean
              :required #(#{:disconnect} (cfg/get :command))}})
 
