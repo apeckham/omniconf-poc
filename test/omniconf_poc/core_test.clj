@@ -4,17 +4,16 @@
             [omniconf.core :as cfg]
             [omniconf-poc.commands :refer [connect disconnect]]))
 
-(defn setup-cfg [values]
-  (cfg/populate-from-map values)
-  (cfg/verify :silent true))
+(defn with-cfg [values f]
+  (with-redefs [cfg/config-values (atom (sorted-map))]
+    (cfg/populate-from-map values)
+    (cfg/verify :silent true)
+    (f)))
 
 (deftest connect-test
-  (with-redefs [cfg/config-values (atom (sorted-map))]
-    (setup-cfg {:command :connect :hostname "asdf"})
-    (is (= "Connecting to asdf!\n" (with-out-str (connect))))))
+  (with-cfg {:command :connect :hostname "asdf"}
+    #(is (= "Connecting to asdf!\n" (with-out-str (connect))))))
 
 (deftest disconnect-test
-  (with-redefs [cfg/config-values (atom (sorted-map))]
-    (setup-cfg {:command :disconnect :confirm true})
-    (cfg/set :confirm false)
-    (is (= "Disconnecting! (confirm is false)\n" (with-out-str (disconnect))))))
+  (with-cfg {:command :disconnect :confirm false}
+    #(is (= "Disconnecting! (confirm is false)\n" (with-out-str (disconnect))))))
