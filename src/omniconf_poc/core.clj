@@ -3,10 +3,16 @@
   (:require [omniconf.core :as cfg]
             omniconf-poc.commands))
 
+(defn verify-regex [regex]
+  (fn [key value]
+    (when-not (re-matches regex value)
+      (throw (ex-info (format "%s doesn't match %s" key (pr-str regex)) {})))))
+
 (cfg/define
   {:hostname {:description "where service is deployed"
               :type :string
-              :required #(#{:connect} (cfg/get :command))}
+              :required #(#{:connect} (cfg/get :command))
+              :verifier (verify-regex #"[a-z-]+\.example\.com")}
    :port     {:description "HTTP port"
               :type :number
               :default 8080}

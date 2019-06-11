@@ -13,8 +13,8 @@
     ~@body))
 
 (deftest connect-test
-  (with-cfg {:command :connect :hostname "asdf"}
-    (is (= "Connecting to asdf!\n" (with-out-str (connect))))))
+  (with-cfg {:command :connect :hostname "asdf.example.com"}
+    (is (= "Connecting to asdf.example.com!\n" (with-out-str (connect))))))
 
 (deftest disconnect-test
   (with-cfg {:command :disconnect :confirm false}
@@ -22,3 +22,6 @@
 
 (deftest invalid-values-test
   (is (thrown-with-msg? ExceptionInfo #"must be one of" (with-cfg {:command :foobar}))))
+
+(deftest regex-value-test
+  (is (thrown-with-msg? ExceptionInfo #"\[:hostname\] doesn't match " (with-cfg {:command :connect :hostname "x"}))))
